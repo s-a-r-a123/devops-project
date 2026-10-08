@@ -1,0 +1,32 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+
+# Terraform lock file
+# Keep this file in Git for reproducible provider versions.
+# .terraform.lock.hcl
+
+# AWS
+.aws/
+
+# Environment files
+.env
+.env.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
