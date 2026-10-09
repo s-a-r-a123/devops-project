@@ -6,12 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t devops-project:%BUILD_NUMBER% .'
@@ -40,6 +34,24 @@ pipeline {
                     bat 'docker tag devops-project:%BUILD_NUMBER% %IMAGE_NAME%:latest'
                     bat 'docker push %IMAGE_NAME%:%BUILD_NUMBER%'
                     bat 'docker push %IMAGE_NAME%:latest'
+                }
+            }
+        }
+
+        stage('Verify AWS Access') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'aws-credentials',
+                        usernameVariable: 'AWS_ACCESS_KEY_ID',
+                        passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+                    )
+                ]) {
+                    bat '''
+                        set AWS_DEFAULT_REGION=ap-south-1
+                        aws sts get-caller-identity
+                        terraform --version
+                    '''
                 }
             }
         }
