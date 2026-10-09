@@ -30,3 +30,9 @@ Thumbs.db
 # Python
 __pycache__/
 *.pyc
+*.tfstate
+*.tfstate.*
+.terraform/
+tfplan
+tfplan.*
+crash.log
