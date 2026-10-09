@@ -48,7 +48,7 @@ pipeline {
                     )
                 ]) {
                     bat '''
-                        set AWS_DEFAULT_REGION=ap-south-1
+                        set AWS_DEFAULT_REGION=ap-southeast-2
                         aws sts get-caller-identity
                         terraform --version
                     '''
