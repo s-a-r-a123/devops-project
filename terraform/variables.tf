@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS region"
   type        = string
-  default     = "ap-south-1"
+  default     = "ap-southeast-2"
 }
 
 variable "project_name" {
@@ -36,6 +36,7 @@ variable "instance_type" {
 variable "key_name" {
   description = "Existing EC2 key pair name"
   type        = string
+  default     = "training"
 }
 
 variable "ghcr_image" {
