@@ -1,23 +1,35 @@
+
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 exec > >(tee /var/log/userdata.log | logger -t user-data -s 2>/dev/console) 2>&1
 
+export AWS_DEFAULT_REGION="ap-southeast-2"
+
 apt-get update -y
-apt-get upgrade -y
+apt-get install -y docker.io awscli jq
 
-apt-get install -y docker.io
-
-systemctl enable docker
-systemctl start docker
-
-usermod -aG docker ubuntu || true
+systemctl enable --now docker
 
 until docker info >/dev/null 2>&1
 do
     sleep 2
 done
+
+SECRET_JSON="$(aws secretsmanager get-secret-value \
+    --secret-id ghcr-read-token \
+    --query SecretString \
+    --output text)"
+
+GHCR_USER="$(printf '%s' "$SECRET_JSON" | jq -er '.username')"
+GHCR_TOKEN="$(printf '%s' "$SECRET_JSON" | jq -er '.token')"
+
+printf '%s' "$GHCR_TOKEN" | docker login ghcr.io \
+    --username "$GHCR_USER" \
+    --password-stdin
+
+unset GHCR_TOKEN SECRET_JSON
 
 docker pull "${ghcr_image}"
 
@@ -29,6 +41,5 @@ docker run -d \
     -p 80:80 \
     "${ghcr_image}"
 
-sleep 5
-
+docker logout ghcr.io
 docker ps

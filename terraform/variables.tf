@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "project_name" {
   description = "Project name"
   type        = string
-  default     = "devops project"
+  default     = "devops-project"
 }
 variable "vpc_cidr" {
   description = "CIDR block for the VPC"
@@ -41,5 +41,10 @@ variable "key_name" {
 
 variable "ghcr_image" {
   description = "Public GHCR Docker image"
+  type        = string
+}
+
+variable "ssh_allowed_cidr" {
+  description = "Your public IP address in CIDR notation"
   type        = string
 }
